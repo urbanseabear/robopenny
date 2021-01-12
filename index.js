@@ -52,8 +52,8 @@ client.on("message", function(message) {
           itemList = itemList + listing;
         }
         let embed = new Discord.MessageEmbed()
-        
-      .setImage(`https://xivapi.com${itemObj.Icon}`)
+      .setImage(`https://i.ibb.co/QdNxT3m/Gil-Icon.png`)
+      .setThumbnail(`https://xivapi.com${itemObj.Icon}`)
       .setDescription(itemList);
       message.reply(`Showing 10 cheapest ${itemObj.Name} on Crystal`);
       message.channel.send(embed);
@@ -100,7 +100,7 @@ client.on("message", function(message) {
       })
       .catch((err) => {
         console.log(err);
-        message.reply(`ERROR`);
+        message.send(`ERROR`);
       });
     
   }
