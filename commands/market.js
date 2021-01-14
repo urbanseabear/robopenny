@@ -33,6 +33,7 @@ module.exports = {
           .setThumbnail(`https://xivapi.com${itemObj.Icon}`)
           .setDescription(itemList.slice(0, 10).join('\n'));
           message.reply(`Showing 10 cheapest ${itemObj.Name} on Crystal`);
+          message.channel.send(embed);
           })
         })
         .catch((err) => {
