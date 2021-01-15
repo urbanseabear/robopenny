@@ -6,6 +6,8 @@ const { JSDOM } = jsdom;
 const fs = require('fs');
 
 const client = new Discord.Client();
+const guild = new Discord.Guild();
+
 client.commands = new Discord.Collection();
 
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
