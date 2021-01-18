@@ -5,12 +5,12 @@ const { JSDOM } = jsdom;
 const fs = require('fs');
 
 module.exports = {
-    name: 'role',
-    description: 'give role',
+    name: 'kick',
+    description: 'kick user from server',
     args: true,
-    usage: '<user> <role>',
+    usage: '<user>',
     execute(message, args) {
       user = '';
-      message.reply(`ROLE_GIVEN_TO: ${user}`);
+      message.reply(`REMOVING... ${user}`);
     },
 };

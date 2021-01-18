@@ -24,14 +24,28 @@ module.exports = {
           return axios.get(`https://xivapi.com/character/${char[0].ID}`);
         })
         .then(({ data }) => {
-          console.log(data.Character);
+          //console.log(data.Character);
           reply = `FC: ${data.Character.FreeCompanyName}\nMinions: ${data.Minions.length}\nMounts: ${data.Mounts.length}\n`;
           let activeJob = data.Character.ActiveClassJob.UnlockedState.Name;
+          let jobs = [];
+          data.Character.ClassJobs.forEach((job) => {
+            let jobStr = `${job.UnlockedState.Name}: ${job.Level}`;
+            jobs.push(jobStr)});
+          let tanks = jobs.splice(0,4);
+          let melee = jobs.splice(0,4);
+          let healers = jobs.splice(0,3);
+          let ranged = jobs.splice(0,3);
+          let magic = jobs.splice(0,4);
           let charEmbed = new Discord.MessageEmbed()
             .setImage(data.Character.Portrait)
             .setColor('#7289da')
             .setAuthor(`${data.Character.Name}`, jobIcons[activeJob])
-            .addField('Combat Jobs', ':wave: 80', true)
+            .addField('Tanks', tanks.join('\n'), true)
+            .addField('Melee DPS', melee.join('\n'), true)
+            .addField('Healers', healers.join('\n'), true)
+            .addField('Ranged DPS', ranged.join('\n'), true)
+            .addField('Magic DPS', magic.join('\n'), true)
+            .addField('Craft/Gather', jobs.join('\n'), true)
             .setDescription(reply);
           //message.reply(reply);
           message.channel.send(charEmbed);

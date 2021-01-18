@@ -6,8 +6,6 @@ const { JSDOM } = jsdom;
 const fs = require('fs');
 
 const client = new Discord.Client();
-const guild = new Discord.Guild();
-
 client.commands = new Discord.Collection();
 
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
@@ -22,6 +20,12 @@ client.on('ready', () => {
 });
 
 const prefix = '^';
+
+client.on('guildMemberAdd', member => {
+  const channel = member.guild.channels.cache.find(ch => ch.name === 'general');
+  if (!channel) return;
+  channel.send(`BEEP BOOP WELCOME ${member}`);
+});
 
 client.on("message", function(message) {
   if (message.author.bot) { return;}
