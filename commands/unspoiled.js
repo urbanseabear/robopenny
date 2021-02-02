@@ -30,7 +30,7 @@ module.exports = {
         console.log(results);
         let adjHours = hours > 12 ? hours - 12 : hours;
         results.forEach(node => {
-          if (node.time[0] < adjHours) {
+          if (node.time[0] <= adjHours) {
             current.time = node.time[0];
           }
           
