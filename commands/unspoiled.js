@@ -28,9 +28,12 @@ module.exports = {
           items: []
         }
         console.log(results);
+        let adjHours = hours > 12 ? hours - 12 : hours;
         results.forEach(node => {
-          current.time = node.time[0];
-          let adjHours = hours > 12 ? hours - 12 : hours;
+          if (node.time[0] < adjHours) {
+            current.time = node.time[0];
+          }
+          
           if (adjHours < node.time[0]) {
             comingUp.type.push(node.type);
             comingUp.zone.push(`${node.zone} (${node.coords.join(',')})`);

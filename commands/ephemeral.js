@@ -28,8 +28,9 @@ module.exports = {
           items: []
         }
         console.log(results);
+        current.time = results[0].time[0];
         results.forEach(node => {
-          current.time = node.time[0];
+          
           if (hours < node.time[0]) {
             comingUp.type.push(node.type);
             comingUp.zone.push(`${node.zone} (${node.coords.join(',')})`);
