@@ -39,7 +39,10 @@ module.exports = {
           .addField(`Price Per x Quantity`, pricePer.slice(0, 10).join('\n'), true)
           .addField(`Total`, total.slice(0, 10).join('\n'), true);
           message.reply(`Showing 10 cheapest ${itemObj.Name} on Crystal`);
-          message.channel.send(embed);
+          message.channel.send(embed)
+          .then(marketEmbed => {
+            marketEmbed.react('👍');
+          });
           })
         })
         .catch((err) => {

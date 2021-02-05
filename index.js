@@ -34,6 +34,7 @@ client.on("message", function(message) {
   const commandBody = message.content.slice(prefix.length);
   const args = commandBody.split(' ');
   const commandName = args.shift().toLowerCase();
+  
 
   if (!client.commands.has(commandName)) return;
 

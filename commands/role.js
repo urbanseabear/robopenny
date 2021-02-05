@@ -10,23 +10,28 @@ module.exports = {
     args: true,
     usage: '<user> <role>',
     execute(message, args) {
-      console.log(message.guild.id);
-      message.guild.members.fetch()
-      .then((result) => {
-        console.log(result);
-      })
-      .catch(console.error);
-      /*if (message.member.roles.cache.has('super weenie hut jr.')) {
-        let user = args[0];
-        let role = args[1];
-        
-        if (message.guild.members) {
-          console.log(message.guild.members);
+      message.guild.roles.fetch()
+      .then( (result) => {
+        let role = result.cache.find(role => role.name === `${args[1]}`);
+        if (role.id) {
+          let user = message.mentions.users.first();
+          let member = message.guild.member(user);
+          if(member) {
+            member.roles.add(role, 'robopenny says so')
+            .then(() => {
+              message.reply(`${user.tag} given role: ${args[1]}`);
+            })
+            .catch(err => {
+              console.log(err);
+            })
+          }
+        } else {
+          message.reply(`no role`);
         }
-        message.reply(`${role}_ROLE_GIVEN_TO: ${user}`);
-      } else {
-        message.reply(` -_- ACCESS_DENIED -_- `);
-      }*/
+      })
+      .catch((err) => {
+        console.error(err);
+      });
       
     },
 };
