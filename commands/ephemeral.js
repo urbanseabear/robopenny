@@ -13,7 +13,8 @@ module.exports = {
       var minutes = parseInt((epoch / (1000 * 60)) % 60);
       minutes < 10 ? minutes = `0${minutes.toString()}` : minutes;
       var hours = parseInt((epoch / (1000 * 60 * 60)) % 24);
-      Nodes.find({ name: 'Ephemeral', patch: {$gte: 5}, time: {$in: [hours, hours - 1, hours - 2, hours - 3, hours + 1, hours + 2, hours + 3, hours + 4]}})
+      let nextDay = hours >= 20 ? 0 : hours;
+      Nodes.find({ name: 'Ephemeral', patch: {$gte: 5}, time: {$in: [hours, hours - 1, hours - 2, hours - 3, hours + 1, hours + 2, hours + 3, hours + 4, nextDay]}})
       .then((results) => {
         let time = '';
         let upTime = 240;
@@ -28,10 +29,10 @@ module.exports = {
           items: []
         }
         console.log(results);
-        current.time = results[0].time[0];
         results.forEach(node => {
           
-          if (hours < node.time[0]) {
+          if (hours < node.time[0] || (hours > 19 && node.time[0] === 0)) {
+            comingUp.time = node.time[0];
             comingUp.type.push(node.type);
             comingUp.zone.push(`${node.zone} (${node.coords.join(',')})`);
           let gatherables = [];
@@ -40,6 +41,7 @@ module.exports = {
           });
           comingUp.items.push(gatherables.join(', '));
           } else {
+            current.time = node.time[0];
             current.type.push(node.type);
             current.zone.push(`${node.zone} (${node.coords.join(',')})`);
             let gatherables = [];
@@ -50,17 +52,24 @@ module.exports = {
           }
           
         });
-        
+        let aOrP = '';
         if (hours > 0 && hours < 12) {
+          aOrP = 'a.m.';
           upTime = upTime - (((hours - current.time) * 60) + minutes);
           time = `Ephemeral Nodes in Eorzea at ${hours}:${minutes} a.m.`;
         } else if (hours === 0) {
           upTime = upTime - minutes;
+          comingUp.time = 12;
+          aOrP = 'a.m.';
           time = `Ephemeral Nodes in Eorzea at 12:${minutes} a.m.`;
         } else if (hours === 12) {
           upTime = upTime - minutes;
+          aOrP = 'p.m.';
           time = `Ephemeral Nodes in Eorzea at ${hours}:${minutes} p.m.`;
         } else {
+          comingUp.time -= 12;
+          comingUp.time === -12 ? aOrP = 'a.m.' : aOrP = 'p.m.';
+          comingUp.time = Math.abs(comingUp.time);
           upTime = upTime - (((hours - current.time) * 60) + minutes);
           time = `Ephemeral Nodes in Eorzea at ${hours - 12}:${minutes} p.m.`;
         }
@@ -73,19 +82,19 @@ module.exports = {
         let i = ctx.measureText(current.items.join('\n'));
         canvas.width = 100 + z.width + t.width + i.width;
 
-        ctx.fillStyle = 'black';
+        ctx.fillStyle = '#242121';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         ctx.font = '20px sans-serif';
         ctx.fillStyle = '#ffffff';
         ctx.fillText(time, 5, 25);
         ctx.fillText(current.type.join('\n'), 5, 95);
-        ctx.fillText(current.zone.join('\n'), 185, 95);
-        ctx.fillText(current.items.join('\n'), 200 + z.width, 95);
+        ctx.fillText(current.zone.join('\n'), 200, 95);
+        ctx.fillText(current.items.join('\n'), 215 + z.width, 95);
         
         ctx.font = '25px sans-serif';
         ctx.fillText(`${upTime} Eorzean minutes remaining`, 15, 60);
-        ctx.fillText('Upcoming', 15, 130 + z.actualBoundingBoxDescent);
+        ctx.fillText(`Upcoming at ${comingUp.time}:00 ${aOrP}`, 15, 130 + z.actualBoundingBoxDescent);
 
         let newY = 130 + z.actualBoundingBoxDescent;
         ctx.font = '20px sans-serif';
@@ -93,8 +102,8 @@ module.exports = {
         ctx.fillStyle = '#ffffff';
         ctx.fillText(time, 5, 25);
         ctx.fillText(comingUp.type.join('\n'), 5, 30 + newY);
-        ctx.fillText(comingUp.zone.join('\n'), 185, 30 + newY);
-        ctx.fillText(comingUp.items.join('\n'), 200 + z.width, 30 + newY);
+        ctx.fillText(comingUp.zone.join('\n'), 200, 30 + newY);
+        ctx.fillText(comingUp.items.join('\n'), 215 + z.width, 30 + newY);
         
 
         canvas.toBuffer((err, buf) => {

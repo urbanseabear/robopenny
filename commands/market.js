@@ -37,7 +37,7 @@ module.exports = {
           .setDescription(`${itemObj.Name}`)
           .addField('World', worlds.slice(0, 10).join('\n'), true)
           .addField(`Price Per x Quantity`, pricePer.slice(0, 10).join('\n'), true)
-          .addField(`Total`, total.slice(0, 10).join('\n'), true);
+          .addField(`Total Price`, total.slice(0, 10).join('\n'), true);
           message.reply(`Showing 10 cheapest ${itemObj.Name} on Crystal`);
           message.channel.send(embed)
           .then(marketEmbed => {

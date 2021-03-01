@@ -17,7 +17,11 @@ module.exports = {
           return axios.get(`https://xivapi.com/item/${response.data.Results[0].ID}`)
         })
         .then((details) => {
-            console.log(details);
+            console.log(details.data.GameContentLinks);
+            return axios.get(`https://xivapi.com/specialshop/${details.data.GameContentLinks.SpecialShop.ItemReceive170[0]}`)
+        })
+        .then((recipe) => {
+            console.log(recipe);
         })
         .catch((err) => {
             console.error(err);
